@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 using TP1.Data;
 using TP1.Domain;
 using TP1.MVC.Models;
@@ -8,39 +11,67 @@ namespace TP1.MVC.Controllers
 {
     public class FriendsController : Controller
     {
-        private readonly Tp1Context _context;
+        private const string CacheKey = "SelectedFriends";
 
-        public FriendsController(Tp1Context context)
+        private readonly Tp1Context _context;
+        public readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
+
+        public FriendsController(Tp1Context context, IMapper mapper, IMemoryCache cache)
         {
             _context = context;
+            _mapper = mapper;
+            _cache = cache;
         }
 
         public IActionResult Index()
         {
-            foreach (var friend in _context.Friends)
-            {
-                if (SelectedFriendsViewModel.Friends.Contains(new SelectedFriendViewModel()
-                    {
-                        BirthDate = friend.BirthDate,
-                        Email = friend.Email,
-                        LastName = friend.LastName,
-                        Id = friend.Id,
-                        Name = friend.Name
-                    })) continue;
-                var editorViewModel = new SelectedFriendViewModel()
-                {
-                    Id = friend.Id,
-                    Name = friend.Name,
-                    LastName = friend.LastName,
-                    BirthDate = friend.BirthDate,
-                    Email = friend.Email,
-                    Selected = false
-                };
-                SelectedFriendsViewModel.Friends.Add(editorViewModel);
+            var friends = GetFriendsFromDatabase();
+            var selectedFriends =  new List<int>();
 
+            var cacheExists = _cache.TryGetValue(CacheKey, out selectedFriends);
+            
+            foreach (var friend in friends)
+            {
+                if (cacheExists && selectedFriends.Contains(friend.Id))
+                    friend.Selected = true;
             }
 
-            return View();
+            return View(friends);
+        }
+
+        private IEnumerable<FriendViewModel> GetFriendsFromDatabase()
+        {
+            return _mapper.Map<IEnumerable<FriendViewModel>>(_context.Friends);
+        }
+
+        [HttpPost]
+        public ActionResult SelectedFriends(List<int> selectedFriends)
+        {
+            if (selectedFriends.Any())
+                AddFriendsToCache(selectedFriends);
+
+            var friends = GetFriendsFromDatabase();
+
+            foreach (var friend in friends)
+            {
+                if (selectedFriends.Contains(friend.Id))
+                    friend.Selected = true;
+            }
+
+            return View(friends);
+        }
+
+        private void AddFriendsToCache(List<int> selectedFriends)
+        {
+            var _ = _cache.GetOrCreate(CacheKey, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(10);
+                entry.SetPriority(CacheItemPriority.High);
+
+                return selectedFriends;
+            });
+        
         }
 
         public IActionResult Add()

@@ -10,6 +10,9 @@ var connectionString = builder.Configuration.GetConnectionString("Tp1Context");
 builder.Services.AddDbContext<Tp1Context>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+builder.Services.AddMemoryCache();
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
