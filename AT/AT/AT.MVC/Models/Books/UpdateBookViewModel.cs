@@ -1,9 +1,6 @@
-﻿using AT.API.DTOs.Authors;
-using AT.Models;
-
-namespace AT.API.DTOs.Books
+﻿namespace AT.MVC.Models.Books
 {
-    public class UpdateBookDto
+    public class UpdateBookViewModel
     {
         public int Id { get; set; }
         public string Title { get; set; }

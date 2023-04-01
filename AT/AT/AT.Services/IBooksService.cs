@@ -9,5 +9,7 @@ namespace AT.Services
         Task<Book> CreateAsync(Book author);
         Task<Book> UpdateAsync(Book author);
         Task<Book> DeleteAsync(int id);
+        Task<Book> AddAuthor(int bookId, int authorId);
+        Task<Book> RemoveAuthor(int bookId, int authorId);
     }
 }

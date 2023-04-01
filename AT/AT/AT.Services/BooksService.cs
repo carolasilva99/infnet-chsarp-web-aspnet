@@ -74,10 +74,6 @@ namespace AT.Services
 
         public async Task<Book> UpdateAsync(Book book)
         {
-            var authors = await GetAuthorsFromId(book);
-
-            book.Authors = authors;
-
             _databaseContext.Entry(book).State = EntityState.Modified;
             await _databaseContext.SaveChangesAsync();
             return book;
@@ -88,6 +84,30 @@ namespace AT.Services
             var book = await GetAsync(id);
 
             _databaseContext.Books.Remove(book);
+            await _databaseContext.SaveChangesAsync();
+
+            return book;
+        }
+
+        public async Task<Book> AddAuthor(int bookId, int authorId)
+        {
+            var book = await GetAsync(bookId);
+            var author = await _authorsService.GetAsync(authorId);
+
+            book.Authors.Add(author);
+
+            await _databaseContext.SaveChangesAsync();
+
+            return book;
+        }
+
+        public async Task<Book> RemoveAuthor(int bookId, int authorId)
+        {
+            var book = await GetAsync(bookId);
+            var author = await _authorsService.GetAsync(authorId);
+
+            book.Authors.Remove(author);
+
             await _databaseContext.SaveChangesAsync();
 
             return book;

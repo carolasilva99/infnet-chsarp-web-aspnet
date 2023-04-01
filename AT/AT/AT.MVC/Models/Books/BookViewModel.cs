@@ -1,13 +1,13 @@
-﻿using AT.API.DTOs.Authors;
-using AT.Models;
+﻿using AT.MVC.Models.Authors;
 
-namespace AT.API.DTOs.Books
+namespace AT.MVC.Models.Books
 {
-    public class UpdateBookDto
+    public class BookViewModel
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public string ISBN { get; set; }
         public int Ano { get; set; }
+        public ICollection<BookAuthorViewModel> Authors { get; set; }
     }
 }

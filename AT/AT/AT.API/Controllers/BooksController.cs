@@ -47,6 +47,18 @@ namespace AT.API.Controllers
             return Ok(_mapper.Map<BookDto>(await _booksService.UpdateAsync(book)));
         }
 
+        [HttpPatch("{bookId}/authors/{authorId}")]
+        public async Task<ActionResult<BookDto>> AddAuthorToBook(int bookId, int authorId)
+        {
+            return Ok(_mapper.Map<BookDto>(await _booksService.AddAuthor(bookId, authorId)));
+        }
+
+        [HttpDelete("{bookId}/authors/{authorId}")]
+        public async Task<ActionResult<BookDto>> DeleteAuthorFromBook(int bookId, int authorId)
+        {
+            return Ok(_mapper.Map<BookDto>(await _booksService.RemoveAuthor(bookId, authorId)));
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<BookDto>> Delete(int id)
         {
