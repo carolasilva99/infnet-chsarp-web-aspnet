@@ -7,7 +7,7 @@ namespace AT.API.DTOs.Books
     {
         public string Title { get; set; }
         public string ISBN { get; set; }
-        public int Ano { get; set; }
+        public int Year { get; set; }
         public ICollection<CreateBookAuthorDto> Authors { get; set; }
     }
 }

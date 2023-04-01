@@ -11,7 +11,7 @@ namespace AT.Models
         public int Id { get; set; }
         public string Title { get; set; }
         public string ISBN { get; set; }
-        public int Ano { get; set; }
+        public int Year { get; set; }
         public ICollection<Author> Authors { get; set; }
         public List<BookAuthor> BookAuthors { get; set; }
     }

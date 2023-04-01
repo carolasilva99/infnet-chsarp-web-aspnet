@@ -7,7 +7,7 @@ namespace AT.MVC.Models.Books
     {
         public string Title { get; set; }
         public string ISBN { get; set; }
-        public int Ano { get; set; }
+        public int Year { get; set; }
         public ICollection<CreateBookAuthorViewModel> Authors { get; set; }
     }
 }

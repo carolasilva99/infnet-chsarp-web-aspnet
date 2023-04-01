@@ -1,4 +1,5 @@
 using AT.Data.Context;
+using AT.Data.Repositories;
 using AT.MVC.Mapper;
 using AT.Services;
 using AutoMapper;
@@ -21,6 +22,8 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 
 builder.Services.AddScoped<IAuthorsService, AuthorsService>();
 builder.Services.AddScoped<IBooksService, BooksService>();
+builder.Services.AddScoped<IAuthorsRepository, AuthorsRepository>();
+builder.Services.AddScoped<IBooksRepository, BooksRepository>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
