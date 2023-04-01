@@ -1,0 +1,75 @@
+﻿@model AT.MVC.Models.Books.RemoveAuthorViewModel
+
+@{
+    ViewData["Title"] = "Remove Author";
+}
+
+<h1>Remove Author</h1>
+
+<h3>Are you sure you want to remove this author from this book?</h3>
+<div>
+    <h1>Details</h1>
+
+    <div>
+        <h4>Book</h4>
+        <hr />
+        <dl class="row">
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Book.Title)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Book.Title)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Book.ISBN)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Book.ISBN)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Book.Ano)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Book.Ano)
+            </dd>
+        </dl>
+    </div>
+
+    <div>
+        <h4>Author</h4>
+        <hr />
+        <dl class="row">
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Author.FirstName)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Author.FirstName)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Author.LastName)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Author.LastName)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Author.Email)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Author.Email)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Author.BirthDate)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Author.BirthDate)
+            </dd>
+        </dl>
+    </div>
+    
+    <form asp-action="RemoveAuthor">
+        @Html.HiddenFor(m => m.AuthorId)
+        @Html.HiddenFor(m => m.BookId)
+        <input type="submit" value="Remove" class="btn btn-danger"/> |
+        <a asp-action="Edit">Back to Edit</a>
+    </form>
+</div>

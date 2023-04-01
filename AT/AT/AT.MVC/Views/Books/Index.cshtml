@@ -39,12 +39,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Ano)
             </td>
-                <td>
-                    @{
-                        var authorsName = item.Authors.Aggregate(string.Empty, (current, author) => current + $"{author.FirstName} {author.LastName}, ");
-                    }
-                    @authorsName
-                </td>
+            <td>
+                @{
+                    var authorsName = string.Join(',', item.Authors.Select(a => $"{a.FirstName} {a.LastName} "));
+                }
+                @authorsName
+            </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new {  id=item.Id }) |
                     @Html.ActionLink("Details", "Details", new {  id=item.Id }) |

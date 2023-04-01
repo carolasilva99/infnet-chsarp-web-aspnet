@@ -75,6 +75,12 @@ namespace AT.MVC.Controllers
         public async Task<ActionResult> Edit(int id)
         {
             var book = await _booksService.GetAsync(id);
+            var otherAuthors = await _authorsService.GetAsync();
+            var authors = book.Authors;
+
+            ViewBag.Authors = authors;
+            ViewBag.OtherAuthors = otherAuthors.Except(authors);
+
             return View(_mapper.Map<UpdateBookViewModel>(book));
         }
 
@@ -110,6 +116,68 @@ namespace AT.MVC.Controllers
             {
                 await _booksService.DeleteAsync(id);
                 return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public async Task<ActionResult> RemoveAuthor(int bookId, int authorId)
+        {
+            var book = await _booksService.GetAsync(bookId);
+            var author = await _authorsService.GetAsync(authorId);
+
+            var removeAuthor = new RemoveAuthorViewModel()
+            {
+                Author = _mapper.Map<AuthorViewModel>(author),
+                Book = _mapper.Map<BookViewModel>(book),
+                AuthorId = author.Id,
+                BookId = book.Id
+            };
+
+            return View(removeAuthor);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RemoveAuthor(RemoveAuthorViewModel removeAuthor)
+        {
+            try
+            {
+                await _booksService.RemoveAuthor(removeAuthor.BookId, removeAuthor.AuthorId);
+                return RedirectToAction(nameof(Edit), new { id = removeAuthor.BookId });
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        public async Task<ActionResult> AddAuthor(int bookId, int authorId)
+        {
+            var book = await _booksService.GetAsync(bookId);
+            var author = await _authorsService.GetAsync(authorId);
+
+            var removeAuthor = new AddAuthorViewModel()
+            {
+                Author = _mapper.Map<AuthorViewModel>(author),
+                Book = _mapper.Map<BookViewModel>(book),
+                AuthorId = author.Id,
+                BookId = book.Id
+            };
+
+            return View(removeAuthor);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> AddAuthor(AddAuthorViewModel addAuthor)
+        {
+            try
+            {
+                await _booksService.AddAuthor(addAuthor.BookId, addAuthor.AuthorId);
+                return RedirectToAction(nameof(Edit), new { id = addAuthor.BookId });
             }
             catch
             {

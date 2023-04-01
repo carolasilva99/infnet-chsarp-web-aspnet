@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AT.Data.Context;
+using AT.Data.Repositories;
 using AT.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,35 +12,23 @@ namespace AT.Services
 {
     public class BooksService : IBooksService
     {
-        private readonly DatabaseContext _databaseContext;
         private readonly IAuthorsService _authorsService;
+        private readonly IBooksRepository _booksRepository;
 
-        public BooksService(DatabaseContext databaseContext, IAuthorsService authorsService)
+        public BooksService(IAuthorsService authorsService, IBooksRepository booksRepository)
         {
-            _databaseContext = databaseContext;
             _authorsService = authorsService;
+            _booksRepository = booksRepository;
         }
 
         public async Task<IEnumerable<Book>> GetAsync()
         {
-            var books = await _databaseContext
-                .Books
-                .Include(b => b.Authors)
-                .ToListAsync();
-
-            return books;
+            return await _booksRepository.GetAsync();
         }
 
         public async Task<Book> GetAsync(int id)
         {
-            var book = _databaseContext
-                .Books
-                .Where(a => a.Id == id)
-                .Include(b => b.Authors)
-                .FirstOrDefault();
-
-
-            return book;
+            return await _booksRepository.GetAsync(id);
         }
 
         public async Task<Book> CreateAsync(Book book)
@@ -48,11 +37,7 @@ namespace AT.Services
 
             book.Authors = authors;
 
-            _databaseContext.Books.Add(book);
-            
-            await _databaseContext.SaveChangesAsync();
-
-            return book;
+            return await _booksRepository.CreateAsync(book);
         }
 
         private async Task<List<Author>> GetAuthorsFromId(Book book)
@@ -74,19 +59,13 @@ namespace AT.Services
 
         public async Task<Book> UpdateAsync(Book book)
         {
-            _databaseContext.Entry(book).State = EntityState.Modified;
-            await _databaseContext.SaveChangesAsync();
-            return book;
+            return await _booksRepository.UpdateAsync(book);
         }
 
         public async Task<Book> DeleteAsync(int id)
         {
             var book = await GetAsync(id);
-
-            _databaseContext.Books.Remove(book);
-            await _databaseContext.SaveChangesAsync();
-
-            return book;
+            return await _booksRepository.DeleteAsync(book);
         }
 
         public async Task<Book> AddAuthor(int bookId, int authorId)
@@ -96,9 +75,7 @@ namespace AT.Services
 
             book.Authors.Add(author);
 
-            await _databaseContext.SaveChangesAsync();
-
-            return book;
+            return await _booksRepository.AddAuthor(book);
         }
 
         public async Task<Book> RemoveAuthor(int bookId, int authorId)
@@ -108,9 +85,7 @@ namespace AT.Services
 
             book.Authors.Remove(author);
 
-            await _databaseContext.SaveChangesAsync();
-
-            return book;
+            return await _booksRepository.RemoveAuthor(book);
         }
     }
 }

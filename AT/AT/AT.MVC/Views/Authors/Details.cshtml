@@ -7,7 +7,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>AuthorViewModel</h4>
+    <h4>Author</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -35,6 +35,38 @@
             @Html.DisplayFor(model => model.BirthDate)
         </dd>
     </dl>
+    <h4>Books</h4>
+    <hr />
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                ISBN
+            </th>
+            <th>
+                Year
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Books) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ISBN)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ano)
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
 </div>
 <div>
     @Html.ActionLink("Edit", "Edit", new {  id = Model.Id }) |
