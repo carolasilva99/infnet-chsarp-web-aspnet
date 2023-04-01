@@ -5,11 +5,12 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using AT.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace AT.Data.Context
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext : IdentityDbContext<User>
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
             : base(options)
@@ -21,6 +22,7 @@ namespace AT.Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Book>()
                 .HasMany(p => p.Authors)
                 .WithMany(p => p.Books)
