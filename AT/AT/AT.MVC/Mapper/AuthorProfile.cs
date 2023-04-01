@@ -8,7 +8,8 @@ namespace AT.MVC.Mapper
     {
         public AuthorProfile()
         {
-            CreateMap<Author, AuthorViewModel>();
+            CreateMap<Author, AuthorViewModel>()
+                .ForMember(m => m.FullName, d => d.MapFrom(mf => $"{mf.FirstName} {mf.LastName}" ));
             CreateMap<CreateAuthorViewModel, Author>();
             CreateMap<Author, CreateAuthorViewModel>();
             CreateMap<UpdateAuthorViewModel, Author>();
