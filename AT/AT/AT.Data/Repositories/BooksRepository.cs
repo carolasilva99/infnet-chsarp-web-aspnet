@@ -55,7 +55,7 @@ namespace AT.Data.Repositories
 
         public async Task<Book> DeleteAsync(Book book)
         {
-            _databaseContext.Entry(book).State = EntityState.Modified;
+            _databaseContext.Books.Remove(book);
             await _databaseContext.SaveChangesAsync();
             return book;
         }
