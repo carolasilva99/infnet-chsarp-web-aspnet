@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AT.Data.Repositories;
+﻿using AT.Data.Repositories;
 using AT.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -33,7 +28,19 @@ namespace AT.Services
             if (!await _usersRepository.ValidateUserAsync(user))
                 return null;
 
-            return await _usersRepository.CreateTokenAsync(user);
+            var userModel = await _usersRepository.GetUserAsync(user);
+
+            return await _usersRepository.CreateTokenAsync(userModel);
+        }
+
+        public async Task<Token> CreateTokenAsync(UserEmailLogin user)
+        {
+            if (!await _usersRepository.ValidateUserAsync(user))
+                return null;
+
+            var userModel = await _usersRepository.GetUserAsync(user);
+
+            return await _usersRepository.CreateTokenAsync(userModel);
         }
     }
 }

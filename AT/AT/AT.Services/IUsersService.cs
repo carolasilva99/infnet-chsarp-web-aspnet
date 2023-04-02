@@ -13,5 +13,6 @@ namespace AT.Services
         Task<IdentityResult> CreateUserAsync(User user, string password);
         Task<bool> ValidateUserAsync(UserLogin loginDto);
         Task<Token> CreateTokenAsync(UserLogin user);
+        Task<Token> CreateTokenAsync(UserEmailLogin user);
     }
 }

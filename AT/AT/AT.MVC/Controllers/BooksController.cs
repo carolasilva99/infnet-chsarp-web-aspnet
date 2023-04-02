@@ -8,9 +8,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace AT.MVC.Controllers
 {
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
     public class BooksController : Controller
     {
         private readonly IMapper _mapper;
@@ -30,7 +33,7 @@ namespace AT.MVC.Controllers
             var books = await _booksService.GetAsync();
             return View(_mapper.Map<IEnumerable<BookViewModel>>(books));
         }
-
+        
         // GET: BooksController/Details/5
         public async Task<ActionResult> Details(int id)
         {

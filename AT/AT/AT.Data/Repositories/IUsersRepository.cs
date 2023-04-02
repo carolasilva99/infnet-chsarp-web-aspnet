@@ -12,6 +12,9 @@ namespace AT.Data.Repositories
     {
         Task<IdentityResult> CreateUserAsync(User user, string password);
         Task<bool> ValidateUserAsync(UserLogin loginDto);
-        Task<Token> CreateTokenAsync(UserLogin user);
+        Task<bool> ValidateUserAsync(UserEmailLogin loginDto);
+        Task<User> GetUserAsync(UserEmailLogin loginDto);
+        Task<User> GetUserAsync(UserLogin loginDto);
+        Task<Token> CreateTokenAsync(User user);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using AT.Data.Context;
 using AT.Models;
 using Microsoft.AspNetCore.Identity;
@@ -33,9 +34,15 @@ public class UsersRepository : IUsersRepository
         return result;
     }
 
-    public async Task<Token> CreateTokenAsync(UserLogin userLogin)
+    public async Task<bool> ValidateUserAsync(UserEmailLogin login)
     {
-        var user = await _userManager.FindByNameAsync(userLogin.UserName);
+        var user = await _userManager.FindByEmailAsync(login.Email);
+        var result = user != null && await _userManager.CheckPasswordAsync(user, login.Password);
+        return result;
+    }
+
+    public async Task<Token> CreateTokenAsync(User user)
+    {
         var signingCredentials = GetSigningCredentials();
         var claims = await GetClaims(user);
         var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
@@ -48,8 +55,17 @@ public class UsersRepository : IUsersRepository
             BearerToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions),
             ExpirationDate = DateTime.Now.AddMinutes(Convert.ToDouble(expiresIn))
         };
-
         return token;
+    }
+
+    public async Task<User> GetUserAsync(UserEmailLogin loginDto)
+    {
+        return await _userManager.FindByEmailAsync(loginDto.Email);
+    }
+
+    public async Task<User> GetUserAsync(UserLogin loginDto)
+    {
+        return await _userManager.FindByNameAsync(loginDto.UserName);
     }
 
     private SigningCredentials GetSigningCredentials()
