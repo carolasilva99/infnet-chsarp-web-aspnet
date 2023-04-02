@@ -60,6 +60,7 @@ namespace AT.MVC.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return View();
                 var authors = authorsId.Select(id => new CreateBookAuthorViewModel() { Id = id }).ToList();
 
                 createModel.Authors = authors;
@@ -94,6 +95,7 @@ namespace AT.MVC.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return View();
                 await _booksService.UpdateAsync(_mapper.Map<Book>(updateBook));
                 return RedirectToAction(nameof(Index));
             }
@@ -113,11 +115,11 @@ namespace AT.MVC.Controllers
         // POST: BooksController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(BookViewModel book)
         {
             try
             {
-                await _booksService.DeleteAsync(id);
+                await _booksService.DeleteAsync(book.Id);
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -133,11 +135,12 @@ namespace AT.MVC.Controllers
 
             var removeAuthor = new RemoveAuthorViewModel()
             {
-                Author = _mapper.Map<AuthorViewModel>(author),
-                Book = _mapper.Map<BookViewModel>(book),
                 AuthorId = author.Id,
                 BookId = book.Id
             };
+
+            ViewBag.Author = _mapper.Map<AuthorViewModel>(author);
+            ViewBag.Book = _mapper.Map<BookViewModel>(book);
 
             return View(removeAuthor);
         }
@@ -148,6 +151,7 @@ namespace AT.MVC.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return View();
                 await _booksService.RemoveAuthor(removeAuthor.BookId, removeAuthor.AuthorId);
                 return RedirectToAction(nameof(Edit), new { id = removeAuthor.BookId });
             }
@@ -164,11 +168,12 @@ namespace AT.MVC.Controllers
 
             var removeAuthor = new AddAuthorViewModel()
             {
-                Author = _mapper.Map<AuthorViewModel>(author),
-                Book = _mapper.Map<BookViewModel>(book),
                 AuthorId = author.Id,
                 BookId = book.Id
             };
+
+            ViewBag.Author = _mapper.Map<AuthorViewModel>(author);
+            ViewBag.Book = _mapper.Map<BookViewModel>(book);
 
             return View(removeAuthor);
         }
@@ -179,6 +184,7 @@ namespace AT.MVC.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return View();
                 await _booksService.AddAuthor(addAuthor.BookId, addAuthor.AuthorId);
                 return RedirectToAction(nameof(Edit), new { id = addAuthor.BookId });
             }

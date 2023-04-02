@@ -48,6 +48,7 @@ namespace AT.MVC.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return View();
                 await _authorsService.CreateAsync(_mapper.Map<Author>(createAuthor));
                 return RedirectToAction(nameof(Index));
             }
@@ -71,6 +72,7 @@ namespace AT.MVC.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return View();
                 await _authorsService.UpdateAsync(_mapper.Map<Author>(updateAuthor));
                 return RedirectToAction(nameof(Index));
             }
@@ -90,11 +92,11 @@ namespace AT.MVC.Controllers
         // POST: AuthorsController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(int id, IFormCollection collection)
+        public async Task<ActionResult> Delete(AuthorViewModel author)
         {
             try
             {
-                await _authorsService.DeleteAsync(id);
+                await _authorsService.DeleteAsync(author.Id);
                 return RedirectToAction(nameof(Index));
             }
             catch

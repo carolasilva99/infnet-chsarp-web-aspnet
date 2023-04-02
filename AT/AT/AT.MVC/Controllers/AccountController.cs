@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AT.MVC.Controllers
 {
@@ -39,6 +40,7 @@ namespace AT.MVC.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return View();
                 var loginModel = _mapper.Map<UserEmailLogin>(login);
                 var token = await _usersService.CreateTokenAsync(loginModel);
 
@@ -91,6 +93,7 @@ namespace AT.MVC.Controllers
         {
             try
             {
+                if (!ModelState.IsValid) return View();
                 var createModel = _mapper.Map<User>(createUser);
                 var result = await _usersService.CreateUserAsync(createModel, createUser.Password);
 
